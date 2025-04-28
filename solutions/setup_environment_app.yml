@@ -1,0 +1,29 @@
+---
+- name: Setup Application Environment
+  hosts: node
+  become: yes
+
+  tasks:
+  - name: Create repository
+    ansible.builtin.file:
+      path: /app_data
+      state: directory
+      mode: '0744'
+
+  - name: Create user group
+    ansible.builtin.group:
+      name: app_group
+      state: present
+
+  - name: Create user
+    ansible.builtin.user:
+      name: app_user
+      create_home: yes
+      group: app_group
+
+  - name: Define permissions to repository
+    ansible.builtin.file:
+      path: /app_data
+      owner: app_user
+      group: app_group
+      mode: '0744'
