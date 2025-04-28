@@ -1,0 +1,35 @@
+---
+- name: Setup Application Environment
+  hosts: node
+  become: yes
+
+  tasks:
+  - name : debug group_vars
+    debug:
+      var: app_username
+
+  - name: Create repository
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0744'
+    loop: "{{ app_directories }}"
+
+  - name: Create user group
+    ansible.builtin.group:
+      name: "{{ app_username.group }}"
+      state: present
+
+  - name: Create user
+    ansible.builtin.user:
+      name: "{{ app_username.user }}"
+      create_home: yes
+      group: "{{ app_username.group }}"
+
+  - name: Define permissions to repository
+    ansible.builtin.file:
+      path: "{{ item }}"
+      owner: "{{ app_username.user }}"
+      group: "{{ app_username.group }}"
+      mode: '0744'
+    loop: "{{ app_directories }}"
