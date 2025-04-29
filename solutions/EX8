@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Saluer l'utilisateur
+      greet:
+        name: "Théo"
+      register: greeting
+
+    - name: Afficher le message de salutation
+      debug:
+        var: greeting
